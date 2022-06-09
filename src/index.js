@@ -178,14 +178,6 @@ function addProject(){
 const projectItems = document.querySelectorAll('.project-item')
 
 projectItems.forEach(item => item.addEventListener('click', function(e){
-    const remove = document.querySelectorAll('.remove-project-li')
-
-    remove.forEach(button => button.addEventListener('click', function(e){
-        projectList.removeChild(e.target.parentElement)
-        todoContainer.removeChild(currentProjectList)
-    }))
-
-    todoContainer.removeChild(todoList)
     const projectHeading = document.createElement('h1')
     projectHeading.classList.add('project-heading')
 
@@ -194,6 +186,14 @@ projectItems.forEach(item => item.addEventListener('click', function(e){
 
     currentProjectList.appendChild(projectHeading)
     todoContainer.appendChild(currentProjectList)
+    
+    
+    
+    //small remove button on aside
+    const remove = document.querySelectorAll('.remove-project-li')
+    remove.forEach(button => button.addEventListener('click', function(e){
+        e.target.parentElement.remove();
+        // currentProjectList.removeChild(projectHeading)
+        // todoContainer.removeChild(currentProjectList)
+    }))
 }))
-
-
