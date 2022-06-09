@@ -9,6 +9,7 @@ const newProjectBtn = document.querySelector('.add-project')
 const projectList = document.querySelector('.project-list')
 const projectContainer = document.querySelector('.projects-container')
 const projectItem = document.querySelectorAll('.project-item')
+const currentProjectList = document.createElement('ol')
 
 projectList.style.display = 'none'
 todoList.classList.add('todo-list')
@@ -70,6 +71,7 @@ function setNewItem(){
         todoContainer.removeChild(cancelBtn)
         newItemBtn.style.display = 'block'
         todoContainer.appendChild(todoList)
+        todoList.style.display = 'block'
     }
 
     addBtn.addEventListener('click', function(){
@@ -143,6 +145,10 @@ function addProject(){
     })
 
     confirmAddProject.addEventListener('click', function(){
+        if(!projectInput.value) {
+            alert('project title cannot be empty')
+            return
+        }
         const newProject = new Project(projectInput.value)
         const projectText = document.createElement('li')
         projectText.classList.add('project-item')
@@ -167,8 +173,27 @@ function addProject(){
 
     })
 }
-const remove = document.querySelectorAll('.remove-project-li')
 
-remove.forEach(button => button.addEventListener('click', function(e){
-    projectList.removeChild(e.target.parentElement)
+
+const projectItems = document.querySelectorAll('.project-item')
+
+projectItems.forEach(item => item.addEventListener('click', function(e){
+    const remove = document.querySelectorAll('.remove-project-li')
+
+    remove.forEach(button => button.addEventListener('click', function(e){
+        projectList.removeChild(e.target.parentElement)
+        todoContainer.removeChild(currentProjectList)
+    }))
+
+    todoContainer.removeChild(todoList)
+    const projectHeading = document.createElement('h1')
+    projectHeading.classList.add('project-heading')
+
+    let text = e.target.textContent.slice(0, e.target.textContent.length-2)
+    projectHeading.textContent = text;
+
+    currentProjectList.appendChild(projectHeading)
+    todoContainer.appendChild(currentProjectList)
 }))
+
+
