@@ -62,6 +62,10 @@ body {
     align-items: center;
 }
 
+.home:hover, .projects:hover {
+    text-decoration: underline;
+}
+
 .project-h1-and-button button {
     color: var(--text-clr);
     padding: 1rem;
@@ -116,6 +120,11 @@ body {
     display: flex;
     justify-content: space-between;
     font-weight: bold;
+}
+
+.project-list li:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .project-list li > button {
@@ -215,7 +224,7 @@ aside h1:hover {
 
 /* MAIN LIST */
 .sub-container > main > .todo-container > .todo-list{
-    width: 50%;
+    width: 70%;
 }
 
 .sub-container > main > .todo-container > .todo-list > li > button {
@@ -239,9 +248,7 @@ aside h1:hover {
     padding: 0.5rem;
 }
 
-.sub-container > main > .todo-container > .todo-list > li:hover {
-    cursor: pointer;
-    border: 1px solid var(--text-clr);
-    border-radius: 5px;
+/* CURRENT PROJECT LIST */
+.todo-container > ol {
+    padding: 0;
 }
-
