@@ -16,239 +16,82 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-/* HEADER */
-
-.content-container {
-    height: 100%;
-}
-
-.content-container header {
-    padding: 1rem;
-}
-
-.content-container header > h1 {
-    font-size: 3rem;
-    height: 15%;
-    border-bottom: 1px solid white;
-}
-
-/* MAIN */
-
-.content-container .sub-container {
-    height: 90%;
-    display: flex;
-}
-
-.content-container .sub-container > main {
+.grid-container {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr;
+}
+
+header {
+    margin: 1rem;
+    border-bottom: 1px solid white;
 }
 
 /* Sidebar */
 
-.content-container .sub-container aside {
-    width: 20%;
+.sidebar-content{
+    width: 100%;
     height: 100%;
-    border-right: 1px solid white;
-    padding: 1rem;
 }
 
-.project-h1-and-button {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+.sidebar-content > ul {
+    list-style: none;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     align-items: center;
+    justify-self: center;
 }
 
-.home:hover, .projects:hover {
-    text-decoration: underline;
-}
-
-.project-h1-and-button button {
-    color: var(--text-clr);
-    padding: 1rem;
-    background: transparent;
-    font-size: 3rem;
-}
-.project-h1-and-button button:hover {
-    transform: rotate(5deg) scale(1.2);
-    cursor: pointer;
-}
-
-.projects-container > .project-input {
-    width: 100%;
-    height: 30px;
-    border-radius: 3px;
-    font-size: 1.2rem;
-    margin: 1rem 0;
-}
-
-.projects-container > button {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--text-clr);
-    border-radius: 3px;
-    background: transparent;
-    color: var(--text-clr);
+.sidebar-content > ul > li {
+    margin-bottom: 0.3rem;
     font-size: 1.2rem;
 }
 
-.projects-container > .cancel-project-btn {
-    margin-top: 1rem;
-}
-
-.projects-container > .add-project-btn:hover {
-    cursor: pointer;
-    background-color: #9FA96A;
-}
-
-.projects-container > .cancel-project-btn:hover {
-    cursor: pointer;
-    background-color: #BF654D;
-}
-
-.project-list {
-    width: 100%;
-    padding: 0;
-}
-
-.project-list li {
-    padding: 0.5rem;
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-}
-
-.project-list li:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.project-list li > button {
-    padding: 0.5rem;
-    background: transparent;
+.remove-project-btn {
     color: white;
-    border: 1px solid white;
-    border-radius: 3px;
+    justify-self: self-end;
+    background: transparent;
+    font-size: 1.2rem
 }
 
-.project-list li > button:hover {
+.remove-project-btn:hover {
+    cursor: pointer;
     background-color: #BF654D;
-    cursor: pointer;
 }
 
-aside h1 {
-    font-size: 3rem;
+.sidebar-content > h1 {
+    padding: 1rem 1rem 0 1rem;
 }
 
-aside h1:hover {
-    cursor: pointer;
-    transform: scale(0.98);
-}
-
-/* To-do container */
-
-.content-container .sub-container > main > .todo-container {
-    height: 100%;
-    width: 100%;
+.sidebar-content > form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    padding-left: 1rem;
 }
 
-.content-container .sub-container > main > .todo-container > button {
-    padding: 0.5rem; 
-    margin: 3rem 0 1rem 0;
-    font-size: 2rem;
-    background: transparent;
-    color: var(--text-clr);
-    border: 1px solid var(--text-clr);
-    border-radius: 3px;
-    width: var(--input-size);
-}
-
-.content-container .sub-container > main > .todo-container > button:hover {
-    cursor: pointer;
-    background-color: #9FA96A;
-}
-
-.content-container .sub-container > main > .todo-container > .item-input {
-    margin: 3rem 0 1rem 0;
-    width: var(--input-size);
+.sidebar-content > form > input {
+    width: 75%;
     height: 30px;
-    border-radius: 3px;
+    margin-top: 0.3rem;
     font-size: 1.2rem;
 }
 
-.content-container .sub-container > main > .todo-container .description-input {
-   width: var(--input-size);
-   height: 150px;
-   font-size: 1.2rem;
-   border-radius: 3px;
-}
-
-
-.content-container .sub-container > main > .todo-container .date-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.content-container .sub-container > main > .todo-container .date-label {
-    font-size: 1.4rem;
-    font-weight: bold;
-}
-
-.content-container .sub-container > main > .todo-container .date-input {
-    margin: 1rem;
-}
-
-.content-container .sub-container > main > .todo-container > .confirm-add {
-    margin: 1rem;
-}
-
-.content-container .sub-container > main > .todo-container > .confirm-add:hover {
-    background-color: #9FA96A;
-}
-
-.content-container .sub-container > main > .todo-container > .cancel-add {
-    margin: 0 1rem 1rem 1rem;
-}
-
-.content-container .sub-container > main > .todo-container > .cancel-add:hover {
-    background-color: #BF654D;
-}
-
-/* MAIN LIST */
-.sub-container > main > .todo-container > .todo-list{
-    width: 70%;
-}
-
-.sub-container > main > .todo-container > .todo-list > li > button {
-    background: transparent;
-    color: var(--text-clr);
-    font-size: 1.5rem;
-    border: 1px solid var(--text-clr);
-    border-radius: 5px;
-}
-
-.sub-container > main > .todo-container > .todo-list > li > button:hover {
-    cursor: pointer;
-    background-color: #BF654D;
-}
-
-.sub-container > main > .todo-container > .todo-list > li {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.5rem;
-    font-weight: bold;
+.sidebar-content > form > button {
+    width: 75%;
+    margin-top: 0.3rem;
     padding: 0.5rem;
+    background-color: #4D3543;
+    color: white;
+    font-size: 1.2rem;
 }
 
-/* CURRENT PROJECT LIST */
-.todo-container > ol {
-    padding: 0;
+/* Main */
+
+.main-content {
+    border: 1px solid white;
+    width: 100%;
+    height: 100%;
 }
