@@ -11,32 +11,26 @@
     <title>To-Do App</title>
 </head>
 <body>
-    <div class="content-container">
-        <!--header-->
-        <header>
-            <h1>to-do</h1>
-        </header>
-        <div class="sub-container">
-            <!--sidebar-->
-            <aside class='sidebar'>
-                <h1 class='home'>home</h1>
-                <div class="project-h1-and-button">
-                    <h1 class='projects'>projects</h1>
-                    <button class='add-project'>+</button>
-                </div>
-                <div class="projects-container">
-                    <ul class= 'project-list'>
-                        <li class='project-item'>React App <button class='remove-project-li'>x</button></li>
-                        <li class='project-item'>Short Story <button class='remove-project-li'>x</button></li>
-                        <li class='project-item'>Personal Website <button class='remove-project-li'>x</button></li>
-                    </ul>
-                </div>
-            </aside>
-            <main>
-                <div class="todo-container">
-                    <button type='button' class='new-item-button'>add to-do</button>
-                </div>
-            </main>
+    <header>
+        <h1>To-do</h1>
+    </header>
+    <div class="grid-container">
+        <!--Sidebar-->
+        <div class="sidebar-content">
+            <h1>Projects</h1>
+            <ul class='projects-list'>
+                <li class='project-item'>React Application</li><button class='remove-project-btn' type='button'>X</button>
+                <li class='project-item'>Personal Website</li><button class='remove-project-btn' type='button'>X</button>
+                <li class='project-item'>Calculator App</li><button class='remove-project-btn' type='button'>X</button>
+            </ul>
+            <!--Add Project-->
+            <form action="" class='project-form'>
+                <input type="text" name="" class="project-title">
+                <button type='button' class='add-project-btn'>Add Project</button>
+            </form>
+        </div>
+        <div class="main-content">
+            
         </div>
     </div>
     <script src='main.js'></script>
