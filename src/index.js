@@ -3,21 +3,14 @@ const StorageCtrl = (function(){
 
 })()
 
-
-
-
-
-
-
-
-
-
 // UI Controller
 const UICtrl = (function(){
     const UISelectors = {
         taskList: '.task-list',
         projectList: '.project-list',
         addTaskBtn: '.add-task',
+        addProjectBtn: '.add-project',
+        projectNameInput: '#project-name',
         taskNameInput: '#task-name',
         taskDescriptionInput: '#task-description'
     }
@@ -44,7 +37,7 @@ const UICtrl = (function(){
             let html = ''
 
             tasks.forEach(task => {
-                html += `<li class="list-group-item task-list-item" id="task-${task.id}"><strong>${task.name}:</strong>  <em>${task.description}</em>
+                html += `<li class="list-group-item task-list-item" id="task-${task.id}"><strong>${task.name}: </strong>  <em>${task.description}</em>
                 <div class="div float-end">
                     <a href="#"><i class="las la-trash"></i></a>
                     <a href="#"><i class="las la-pen"></i></a>
@@ -52,7 +45,7 @@ const UICtrl = (function(){
             </li>`
             })
 
-            // Insert list item
+            // Insert task
             document.querySelector(UISelectors.taskList).innerHTML = html
         },
 
@@ -60,28 +53,69 @@ const UICtrl = (function(){
             return UISelectors
         },
 
+        getProjectInput: function(){
+            return {
+                name: document.querySelector(UISelectors.projectNameInput).value
+            }
+        },
+
         getTaskInput: function(){
             return {
                 name: document.querySelector(UISelectors.taskNameInput).value,
                 description: document.querySelector(UISelectors.taskDescriptionInput).value
             }
+        },
+
+        addTaskUI: function(task){
+            // Create li element
+            const li = document.createElement('li')
+            // Add class
+            li.className = "list-group-item task-list-item"
+            // Add id
+            li.id = `task-${task.id}`
+            // Add html
+            li.innerHTML = `<strong>${task.name}: </strong>  <em>${task.description}</em>
+            <div class="div float-end">
+                <a href="#"><i class="las la-trash"></i></a>
+                <a href="#"><i class="las la-pen"></i></a>
+            </div>`
+            // Insert task
+            document.querySelector(UISelectors.taskList).insertAdjacentElement('beforeend', li)
+        },
+
+        addProjectUI: function(project){
+            // Create li element
+            const li = document.createElement('li')
+            // Add class
+            li.className = "list-group-item project-list-item"
+            // Add id
+            li.id = `project-${project.id}`
+            // Add html
+            li.innerHTML = `<strong>${project.name}</strong>
+            <div class="div float-end">
+                <a href="#"><i class="las la-trash"></i></a>
+                <a href="#"><i class="las la-pen"></i></a>
+            </div>`
+            // Insert task
+            document.querySelector(UISelectors.projectList).insertAdjacentElement('beforeend', li)
+        },
+
+        clearTaskInput: function(){
+            document.querySelector(UISelectors.taskNameInput).value = ''
+            document.querySelector(UISelectors.taskDescriptionInput).value = ''
+        },
+
+        clearProjectInput: function(){
+            document.querySelector(UISelectors.projectNameInput).value = ''
         }
     }
 
 })()
 
 
-
-
-
-
-
-
-
-
-// Item Controller
+// Task Controller
 const TaskCtrl = (function(){
-    // Item constructor
+    // Task constructor
     const Task = function(id, name, description){
         this.id = id
         this.name = name
@@ -104,45 +138,59 @@ const TaskCtrl = (function(){
             {id: 1, name: "Task two", description: "my second description"},
             {id: 2, name: "Task three", description: "my third description"}
         ],
-        currentItem: null,
+        currentTask: null,
         currentList: null
     }
 
     // Public methods
     return {
+
         getProjects: function(){
             return data.projects
         },
+
         getTasks: function(){
             return data.tasks
         },
+
+        addProject: function(name){
+            // Generate an ID
+            let ID;
+            if(data.projects.length > 0){
+                ID = data.projects[data.projects.length -1].id +1
+            } else {
+                ID = 0
+            }
+
+            // Create new project
+            const newProject = new Project(ID, name)
+            // Add to data structure
+            data.projects.push(newProject)
+            return newProject
+        },
+
         addTask: function(name, description){
             // Generate an ID
             let ID;
             if(data.tasks.length > 0){
                 ID = data.tasks[data.tasks.length -1].id +1
             } else {
-                ID = 0;
+                ID = 0
             }
 
             // Create new task
-            newTask = new Task(ID, name, description)
+            const newTask = new Task(ID, name, description)
             // Add to data structure
             data.tasks.push(newTask)
 
             return newTask
         },
+
         logData: function(){
-            return data;
+            return data
         }
     }
 })()
-
-
-
-
-
-
 
 
 // App Controller
@@ -153,7 +201,26 @@ const App = (function(TaskCtrl, UICtrl){
 
         // Add task event 
         document.querySelector(UISelectors.addTaskBtn).addEventListener('click', taskAddSubmit)
+
+        // Add project event
+        document.querySelector(UISelectors.addProjectBtn).addEventListener('click', projectAddSubmit)
     }
+
+    const projectAddSubmit = function(e){
+        // Get form input from UI controller
+        const input = UICtrl.getProjectInput()
+
+        // Check for empty input
+        if(input.name !== '') {
+            // Add task
+            const newProject = TaskCtrl.addProject(input.name)
+            // Add project to UI
+            UICtrl.addProjectUI(newProject)
+            // Clear fields
+            UICtrl.clearProjectInput();
+        }
+        e.preventDefault()
+}
 
     const taskAddSubmit = function(e){
         // Get form input from UI controller
@@ -163,10 +230,11 @@ const App = (function(TaskCtrl, UICtrl){
         if(input.name !== '' && input.description !== '') {
             // Add task
             const newTask = TaskCtrl.addTask(input.name, input.description)
-        } else {
-            return false
-        }
-
+            // Add task to UI
+            UICtrl.addTaskUI(newTask)
+            // Clear fields
+            UICtrl.clearTaskInput();
+        } 
         e.preventDefault()
     }
 
@@ -185,7 +253,7 @@ const App = (function(TaskCtrl, UICtrl){
             loadEventListeners()
         }
     }
+    }
+)(TaskCtrl, UICtrl)
 
-})(TaskCtrl, UICtrl)
-
-App.init();
+App.init()
