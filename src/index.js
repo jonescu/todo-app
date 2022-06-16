@@ -9,7 +9,13 @@ const UICtrl = (function(){
         taskList: '.task-list',
         projectList: '.project-list',
         addTaskBtn: '.add-task',
+        deleteTaskBtn: '.delete-task',
+        updateTaskBtn: '.update-task',
+        cancelTaskBtn: '.cancel-update-task',
         addProjectBtn: '.add-project',
+        deleteProjectBtn: '.delete-project',
+        updateProjectBtn: '.update-project',
+        cancelProjectBtn: '.cancel-update-project',
         projectNameInput: '#project-name',
         taskNameInput: '#task-name',
         taskDescriptionInput: '#task-description'
@@ -23,8 +29,8 @@ const UICtrl = (function(){
             projects.forEach(project => {
                 html += `<li class="list-group-item project-list-item" id="project-${project.id}"><strong>Item One</strong>
                 <div class="div float-end">
-                    <a href=""><i class="las la-trash"></i></a>
-                    <a href="#"><i class="las la-pen"></i></a>
+                    <a href="#"><i class="delete-project las la-trash"></i></a>
+                    <a href="#"><i class="edit-project las la-pen"></i></a>
                 </div>
             </li>`
             })
@@ -39,8 +45,8 @@ const UICtrl = (function(){
             tasks.forEach(task => {
                 html += `<li class="list-group-item task-list-item" id="task-${task.id}"><strong>${task.name}: </strong>  <em>${task.description}</em>
                 <div class="div float-end">
-                    <a href="#"><i class="las la-trash"></i></a>
-                    <a href="#"><i class="las la-pen"></i></a>
+                    <a href="#"><i class="delete-task las la-trash"></i></a>
+                    <a href="#"><i class="edit-task las la-pen"></i></a>
                 </div>
             </li>`
             })
@@ -76,8 +82,8 @@ const UICtrl = (function(){
             // Add html
             li.innerHTML = `<strong>${task.name}: </strong>  <em>${task.description}</em>
             <div class="div float-end">
-                <a href="#"><i class="las la-trash"></i></a>
-                <a href="#"><i class="las la-pen"></i></a>
+                <a href="#"><i class="delete-task las la-trash"></i></a>
+                <a href="#"><i class="edit-task las la-pen"></i></a>
             </div>`
             // Insert task
             document.querySelector(UISelectors.taskList).insertAdjacentElement('beforeend', li)
@@ -93,8 +99,8 @@ const UICtrl = (function(){
             // Add html
             li.innerHTML = `<strong>${project.name}</strong>
             <div class="div float-end">
-                <a href="#"><i class="las la-trash"></i></a>
-                <a href="#"><i class="las la-pen"></i></a>
+                <a href="#"><i class="delete-project las la-trash"></i></a>
+                <a href="#"><i class="edit-project las la-pen"></i></a>
             </div>`
             // Insert task
             document.querySelector(UISelectors.projectList).insertAdjacentElement('beforeend', li)
@@ -107,7 +113,40 @@ const UICtrl = (function(){
 
         clearProjectInput: function(){
             document.querySelector(UISelectors.projectNameInput).value = ''
+        },
+
+        clearTaskEditState: function(){
+            UICtrl.clearTaskInput()
+            document.querySelector(UISelectors.updateTaskBtn).style.display = 'none'
+            document.querySelector(UISelectors.cancelTaskBtn).style.display = 'none'
+        },
+
+        showTaskEditState: function(){
+            document.querySelector(UISelectors.updateTaskBtn).style.display = 'inline'
+            document.querySelector(UISelectors.cancelTaskBtn).style.display = 'inline'
+            document.querySelector(UISelectors.addTaskBtn).style.display = 'none'
+        },
+
+        clearProjectEditState: function(){
+            UICtrl.clearProjectInput()
+            document.querySelector(UISelectors.updateProjectBtn).style.display = 'none'
+            document.querySelector(UISelectors.cancelProjectBtn).style.display = 'none'
+        },
+
+        showProjectEditState: function(){
+
+        },
+
+        addTaskToEdit: function(){
+            document.querySelector(UISelectors.taskNameInput).value = TaskCtrl.getCurrentTask().name
+            document.querySelector(UISelectors.taskDescriptionInput).value = TaskCtrl.getCurrentTask().description
+            UICtrl.showTaskEditState()
+        },
+
+        addProjectToEdit: function(){
+
         }
+
     }
 
 })()
@@ -131,12 +170,12 @@ const TaskCtrl = (function(){
     //Data structure / State
     const data = {
         projects: [
-            {id: 0, name: "Project One"}
+            // {id: 0, name: "Project One"}
         ],
         tasks: [
-            {id: 0, name: "Task one", description: "my description"},
-            {id: 1, name: "Task two", description: "my second description"},
-            {id: 2, name: "Task three", description: "my third description"}
+            // {id: 0, name: "Task one", description: "my description"},
+            // {id: 1, name: "Task two", description: "my second description"},
+            // {id: 2, name: "Task three", description: "my third description"}
         ],
         currentTask: null,
         currentList: null
@@ -186,6 +225,25 @@ const TaskCtrl = (function(){
             return newTask
         },
 
+        getTaskById: function(id){
+            let found = null
+
+            data.tasks.forEach(task => {
+                if(task.id === id) {
+                    found = task
+                }
+            })
+            return found
+        },
+
+        setCurrentTask: function(task){
+            data.currentTask = task
+        },
+
+        getCurrentTask: function(){
+            return data.currentTask
+        },
+
         logData: function(){
             return data
         }
@@ -201,6 +259,9 @@ const App = (function(TaskCtrl, UICtrl){
 
         // Add task event 
         document.querySelector(UISelectors.addTaskBtn).addEventListener('click', taskAddSubmit)
+
+        // Edit task event
+        document.querySelector(UISelectors.taskList).addEventListener('click', editTask)
 
         // Add project event
         document.querySelector(UISelectors.addProjectBtn).addEventListener('click', projectAddSubmit)
@@ -220,7 +281,7 @@ const App = (function(TaskCtrl, UICtrl){
             UICtrl.clearProjectInput();
         }
         e.preventDefault()
-}
+    }
 
     const taskAddSubmit = function(e){
         // Get form input from UI controller
@@ -238,9 +299,32 @@ const App = (function(TaskCtrl, UICtrl){
         e.preventDefault()
     }
 
+    const editTask = function(e){
+        if(e.target.classList.contains('edit-task')){
+            // Get great grandparent id
+            const taskId = e.target.parentElement.parentElement.parentElement.id;
+            // Split
+            const taskIdArray = taskId.split('-')
+            // Get actual id
+            const id = parseInt(taskIdArray[1])
+            // Get task
+            const taskToEdit = TaskCtrl.getTaskById(id)
+            // Set current item
+            TaskCtrl.setCurrentTask(taskToEdit)
+            // Add task to form for editing
+            UICtrl.addTaskToEdit();
+        } else {
+            console.log('not the button')
+        }
+        e.preventDefault()
+    }
+
     // Public methods
     return {
         init: function(){
+            // Set initial state
+            UICtrl.clearProjectEditState()
+            UICtrl.clearTaskEditState()
             // Fetch items from data structure
             const tasks = TaskCtrl.getTasks()
             // Populate list with items
@@ -253,7 +337,7 @@ const App = (function(TaskCtrl, UICtrl){
             loadEventListeners()
         }
     }
-    }
+  }
 )(TaskCtrl, UICtrl)
 
 App.init()

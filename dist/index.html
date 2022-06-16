@@ -9,7 +9,7 @@
   </head>
   <body>
       <!--NAVBAR-->
-    <nav class="navbar navbar-expand bg-success p-3">
+    <nav class="navbar navbar-expand bg-primary p-3">
         <h1 class='text-light'>To-do</h1>
     </nav>
     <!--PROJECTS-->
@@ -18,14 +18,14 @@
             <div class="col-md-4">
                 <div class="card mt-4 mb-4">
                     <div class="card-body">
-                        <div class="card-title text-center">Projects</div>
+                        <div class="card-title text-center h4">Projects</div>
                         <form action="#">
                             <div class="mb-3">
                                 <label for="project-name" class="form-label">Project Name</label>
                                 <input type="text" class="form-control mb-4" id="project-name" placeholder="">
-                                    <button class="btn btn-success add-project" type="button">Add Project</button>
-                                    <!-- <button class="btn btn-warning" type="button">Update Project</button> -->
-                                    <!-- <button class="btn btn-secondary float-end" type="button">Cancel</button> -->
+                                    <button class="btn btn-primary add-project" type="button">Add Project</button>
+                                    <button class="btn btn-warning update-project" type="button">Update Project</button>
+                                    <button class="btn btn-secondary cancel-update-project float-end" type="button">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -44,7 +44,7 @@
             <div class="col-md-8">
                 <div class="card mt-4 mb-4">
                     <div class="card-body">
-                        <div class="card-title text-center">Current List</div>
+                        <div class="card-title text-center h4">My Project</div>
                         <form action="#">
                             <div class="mb-3">
                                 <label for="task-name" class="form-label">Task Name</label>
@@ -53,9 +53,9 @@
                               <div class="mb-3">
                                 <label for="task-desc" class="form-label">Task Description</label>
                                 <textarea class="form-control mb-4" id="task-description" rows="3"></textarea>
-                                
-                                    <button class="btn btn-success add-task" type="button">Add Task</button>
-                                
+                                    <button class="btn btn-primary add-task" type="button">Add Task</button>
+                                    <button class="btn btn-warning update-task" type="button">Update Task</button>
+                                    <button class="btn btn-secondary cancel-update-task float-end" type="button">Cancel</button>
                               </div>
                         </form>
                     </div>
@@ -64,8 +64,8 @@
                 <ul class='list-group task-list'>
                     <!-- <li class="list-group-item d-flex justify-content-between align-items-start task-list-item">Item One
                         <div class="div">
-                            <a href=""><i class="las la-trash"></i></a>
-                            <a href="#"><i class="las la-pen"></i></a>
+                            <a href=""><i class="las la-trash delete-task"></i></a>
+                            <a href="#"><i class="las la-pen edit-task"></i></a>
                         </div>
                     </li> -->
                 </ul>
