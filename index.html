@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>To-do Application</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
   </head>
@@ -23,9 +23,9 @@
                             <div class="mb-3">
                                 <label for="project-name" class="form-label">Project Name</label>
                                 <input type="text" class="form-control mb-4" id="project-name" placeholder="">
-                                    <button class="btn btn-success" type="button">Add Project</button>
+                                    <button class="btn btn-success add-project" type="button">Add Project</button>
                                     <!-- <button class="btn btn-warning" type="button">Update Project</button> -->
-                                    <button class="btn btn-secondary float-end" type="button">Cancel</button>
+                                    <!-- <button class="btn btn-secondary float-end" type="button">Cancel</button> -->
                             </div>
                         </form>
                     </div>
@@ -52,10 +52,10 @@
                               </div>
                               <div class="mb-3">
                                 <label for="task-desc" class="form-label">Task Description</label>
-                                <textarea class="form-control" id="task-description" rows="3"></textarea>
-                                <div class="d-grid gap-2 mt-4">
+                                <textarea class="form-control mb-4" id="task-description" rows="3"></textarea>
+                                
                                     <button class="btn btn-success add-task" type="button">Add Task</button>
-                                </div>
+                                
                               </div>
                         </form>
                     </div>
