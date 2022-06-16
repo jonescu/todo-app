@@ -134,7 +134,9 @@ const UICtrl = (function(){
         },
 
         showProjectEditState: function(){
-
+            document.querySelector(UISelectors.updateProjectBtn).style.display = 'inline'
+            document.querySelector(UISelectors.cancelProjectBtn).style.display = 'inline'
+            document.querySelector(UISelectors.addProjectBtn).style.display = 'none'
         },
 
         addTaskToEdit: function(){
@@ -144,7 +146,8 @@ const UICtrl = (function(){
         },
 
         addProjectToEdit: function(){
-
+            document.querySelector(UISelectors.projectNameInput).value = TaskCtrl.getCurrentProject().name
+            UICtrl.showProjectEditState()
         }
 
     }
@@ -178,6 +181,7 @@ const TaskCtrl = (function(){
             // {id: 2, name: "Task three", description: "my third description"}
         ],
         currentTask: null,
+        currentProject: null,
         currentList: null
     }
 
@@ -236,12 +240,31 @@ const TaskCtrl = (function(){
             return found
         },
 
+        getProjectById: function(id){
+            let found = null
+            
+            data.projects.forEach(project => {
+                if(project.id === id) {
+                    found = project
+                }
+            })
+            return found
+        },
+
         setCurrentTask: function(task){
             data.currentTask = task
         },
 
         getCurrentTask: function(){
             return data.currentTask
+        },
+
+        setCurrentProject: function(project) {
+            data.currentProject = project
+        },
+
+        getCurrentProject: function(){
+            return data.currentProject
         },
 
         logData: function(){
@@ -265,6 +288,10 @@ const App = (function(TaskCtrl, UICtrl){
 
         // Add project event
         document.querySelector(UISelectors.addProjectBtn).addEventListener('click', projectAddSubmit)
+
+        // Edit project event
+        document.querySelector(UISelectors.projectList).addEventListener('click', editProject)
+
     }
 
     const projectAddSubmit = function(e){
@@ -313,8 +340,26 @@ const App = (function(TaskCtrl, UICtrl){
             TaskCtrl.setCurrentTask(taskToEdit)
             // Add task to form for editing
             UICtrl.addTaskToEdit();
+        } 
+        e.preventDefault()
+    }
+
+    const editProject = function(e) {
+        if(e.target.classList.contains('edit-project')){
+            // Get great grandparent id
+            const projectId = e.target.parentElement.parentElement.parentElement.id;
+            // Split
+            const projectIdArray = projectId.split('-')
+            // Get actual id
+            const id = parseInt(projectIdArray[1])
+            // Get task
+            const projectToEdit = TaskCtrl.getProjectById(id)
+            // Set current item
+            TaskCtrl.setCurrentProject(projectToEdit)
+            // Add task to form for editing
+            UICtrl.addProjectToEdit();
         } else {
-            console.log('not the button')
+            console.log('not working')
         }
         e.preventDefault()
     }
