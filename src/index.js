@@ -140,6 +140,19 @@ const UICtrl = (function(){
             })
         },
 
+        deleteTaskUI: function(id){
+            const taskId = `#task-${id}`
+            console.log(taskId)
+            const task = document.querySelector(taskId)
+            task.remove()
+        },
+
+        deleteProjectUI: function(id){
+            const projectId = `#project-${id}`
+            const project = document.querySelector(projectId)
+            project.remove()
+        },
+
         clearTaskInput: function(){
             document.querySelector(UISelectors.taskNameInput).value = ''
             document.querySelector(UISelectors.taskDescriptionInput).value = ''
@@ -190,7 +203,6 @@ const UICtrl = (function(){
 
 })()
 
-
 // Task Controller
 const TaskCtrl = (function(){
     // Task constructor
@@ -209,12 +221,12 @@ const TaskCtrl = (function(){
     //Data structure / State
     const data = {
         projects: [
-            // {id: 0, name: "Project One"}
+            {id: 0, name: "Project One"}
         ],
         tasks: [
-            // {id: 0, name: "Task one", description: "my description"},
-            // {id: 1, name: "Task two", description: "my second description"},
-            // {id: 2, name: "Task three", description: "my third description"}
+            {id: 0, name: "Task one", description: "my description"},
+            {id: 1, name: "Task two", description: "my second description"},
+            {id: 2, name: "Task three", description: "my third description"}
         ],
         currentTask: null,
         currentProject: null,
@@ -301,6 +313,22 @@ const TaskCtrl = (function(){
             return found
         },
 
+        deleteTask: function(id){
+            const ids = data.tasks.map(task => task.id)
+
+            const index = ids.indexOf(id)
+
+            data.tasks.splice(index, 1)
+        },
+
+        deleteProject: function(id){
+            const ids = data.projects.map(project => project.id)
+
+            const index = ids.indexOf(id)
+
+            data.projects.splice(index, 1)
+        },
+
         getProjectById: function(id){
             let found = null
             
@@ -334,32 +362,31 @@ const TaskCtrl = (function(){
     }
 })()
 
-
 // App Controller
 const App = (function(TaskCtrl, UICtrl){
 
     const loadEventListeners = function(){
         const UISelectors = UICtrl.getSelectors()
 
-        // Add task event 
+        // Add task / project events
         document.querySelector(UISelectors.addTaskBtn).addEventListener('click', taskAddSubmit)
-
-        // Edit task event
-        document.querySelector(UISelectors.taskList).addEventListener('click', editTask)
-
-        // Update task event
-        document.querySelector(UISelectors.updateTaskBtn).addEventListener('click', updateTaskSubmit)
-
-        // Add project event
         document.querySelector(UISelectors.addProjectBtn).addEventListener('click', projectAddSubmit)
 
-        // Edit project event
+        // Edit task / projects events
+        document.querySelector(UISelectors.taskList).addEventListener('click', editTask)
         document.querySelector(UISelectors.projectList).addEventListener('click', editProject)
 
-        // Update project event
+        // Update task / projects events
+        document.querySelector(UISelectors.updateTaskBtn).addEventListener('click', updateTaskSubmit)
         document.querySelector(UISelectors.updateProjectBtn).addEventListener('click', updateProjectSubmit)
 
+        // Back button events
+        document.querySelector(UISelectors.cancelProjectBtn).addEventListener('click', UICtrl.clearProjectEditState)
+        document.querySelector(UISelectors.cancelTaskBtn).addEventListener('click', UICtrl.clearTaskEditState)
 
+        // Delete button events
+        document.querySelector(UISelectors.taskList).addEventListener('click', deleteTaskSubmit)
+        document.querySelector(UISelectors.projectList).addEventListener('click', deleteProjectSubmit)
     }
 
     const projectAddSubmit = function(e){
@@ -439,9 +466,7 @@ const App = (function(TaskCtrl, UICtrl){
             TaskCtrl.setCurrentProject(projectToEdit)
             // Add task to form for editing
             UICtrl.addProjectToEdit();
-        } else {
-            console.log('not working')
-        }
+        } 
         e.preventDefault()
     }
 
@@ -456,6 +481,38 @@ const App = (function(TaskCtrl, UICtrl){
         UICtrl.clearProjectEditState()
 
         e.preventDefault()
+    }
+
+    const deleteTaskSubmit = function(e){
+        if(e.target.classList.contains('delete-task')){
+          // Get great grandparent id
+          const taskId = e.target.parentElement.parentElement.parentElement.id;
+          // Split
+          const taskIdArray = taskId.split('-')
+          // Get actual id
+          const id = parseInt(taskIdArray[1])
+          // Delete from data structure
+          TaskCtrl.deleteTask(id)
+          // Delete from UI
+          UICtrl.deleteTaskUI(id)
+        }
+        e.preventDefault()
+    }
+
+    const deleteProjectSubmit = function(e){
+        if(e.target.classList.contains('delete-project')){
+            // Get great grandparent id
+            const projectId = e.target.parentElement.parentElement.parentElement.id;
+            // Split
+            const projectIdArray = projectId.split('-')
+            // Get actual id
+            const id = parseInt(projectIdArray[1])
+            // Delete from data structure
+            TaskCtrl.deleteProject(id)
+            // Delete from UI
+            UICtrl.deleteProjectUI(id)
+          }
+          e.preventDefault()
     }
 
     // Public methods
