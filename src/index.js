@@ -1,6 +1,103 @@
 // Storage Controller
 const StorageCtrl = (function(){
+    return {
+        storeTask: function(task) {
+            let tasks
+            if(localStorage.getItem('tasks') === null){
+                tasks = []
+                // Push new project
+                tasks.push(task)
+                // Set LS
+                localStorage.setItem('tasks', JSON.stringify(tasks))
+            } else {
+                // Get what's in LS already
+                tasks = JSON.parse(localStorage.getItem('tasks'))
+                // Push new project
+                tasks.push(task)
+                // Reset LS
+                localStorage.setItem('tasks', JSON.stringify(tasks))
+            }
+        },
 
+        getTasksFromStorage: function(){
+            let tasks
+            if(localStorage.getItem('tasks') === null){
+                tasks = []
+            } else {
+                tasks = JSON.parse(localStorage.getItem('tasks'))
+            }
+            return tasks
+        },
+
+        updateTaskStorage: function(updatedTask){
+            let tasks = JSON.parse(localStorage.getItem('tasks'))
+            tasks.forEach(function(task, index) {
+                if(updatedTask.id === task.id){
+                    tasks.splice(index, 1, updatedTask)
+                }
+                localStorage.setItem('tasks', JSON.stringify(tasks))
+            })
+        },
+
+        deleteTaskFromStorage: function(id){
+            let tasks = JSON.parse(localStorage.getItem('tasks'))
+            tasks.forEach(function(task, index) {
+                if(id === task.id){
+                    tasks.splice(index, 1)
+                }
+                localStorage.setItem('tasks', JSON.stringify(tasks))
+            })
+        },
+
+        storeProject: function(project){
+            let projects
+            // Check for items in LS
+            if(localStorage.getItem('projects') === null){
+                projects = []
+                // Push new project
+                projects.push(project)
+                // Set LS
+                localStorage.setItem('projects', JSON.stringify(projects))
+            } else {
+                // Get what's in LS already
+                projects = JSON.parse(localStorage.getItem('projects'))
+                // Push new project
+                projects.push(project)
+                // Reset LS
+                localStorage.setItem('projects', JSON.stringify(projects))
+            }
+        },
+
+        getProjectsFromStorage: function(){
+            let projects
+            if(localStorage.getItem('projects') === null){
+                projects = []
+            } else {
+                projects = JSON.parse(localStorage.getItem('projects'))
+            }
+            return projects
+        },
+
+        updateProjectStorage: function(updatedProject){
+            let projects = JSON.parse(localStorage.getItem('projects'))
+            projects.forEach(function(project, index) {
+                if(updatedProject.id === project.id){
+                    projects.splice(index, 1, updatedProject)
+                }
+                localStorage.setItem('projects', JSON.stringify(projects))
+            })
+        },
+
+        deleteProjectFromStorage: function(id){
+            let projects = JSON.parse(localStorage.getItem('projects'))
+            projects.forEach(function(project, index) {
+                if(id === project.id){
+                    projects.splice(index, 1)
+                }
+                localStorage.setItem('projects', JSON.stringify(projects))
+            })
+        }
+    }
 })()
 
 // UI Controller
@@ -27,23 +124,20 @@ const UICtrl = (function(){
     return {
         populateProjectList: function(projects){
             let html = ''
-
             projects.forEach(project => {
-                html += `<li class="list-group-item project-list-item" id="project-${project.id}"><strong>Item One</strong>
+                html += `<li class="list-group-item project-list-item" id="project-${project.id}"><strong>${project.name}</strong>
                 <div class="div float-end">
                     <a href="#"><i class="delete-project las la-trash"></i></a>
                     <a href="#"><i class="edit-project las la-pen"></i></a>
                 </div>
             </li>`
             })
-
             // Insert project 
             document.querySelector(UISelectors.projectList).innerHTML = html
         },
 
         populateTaskList: function(tasks){
             let html = ''
-
             tasks.forEach(task => {
                 html += `<li class="list-group-item task-list-item" id="task-${task.id}"><strong>${task.name}: </strong>  <em>${task.description}</em>
                 <div class="div float-end">
@@ -52,7 +146,6 @@ const UICtrl = (function(){
                 </div>
             </li>`
             })
-
             // Insert task
             document.querySelector(UISelectors.taskList).innerHTML = html
         },
@@ -198,7 +291,6 @@ const UICtrl = (function(){
             document.querySelector(UISelectors.projectNameInput).value = TaskCtrl.getCurrentProject().name
             UICtrl.showProjectEditState()
         }
-
     }
 
 })()
@@ -220,14 +312,8 @@ const TaskCtrl = (function(){
 
     //Data structure / State
     const data = {
-        projects: [
-            {id: 0, name: "Project One"}
-        ],
-        tasks: [
-            {id: 0, name: "Task one", description: "my description"},
-            {id: 1, name: "Task two", description: "my second description"},
-            {id: 2, name: "Task three", description: "my third description"}
-        ],
+        projects: StorageCtrl.getProjectsFromStorage(),
+        tasks: StorageCtrl.getTasksFromStorage(),
         currentTask: null,
         currentProject: null,
         currentList: null
@@ -252,7 +338,6 @@ const TaskCtrl = (function(){
             } else {
                 ID = 0
             }
-
             // Create new project
             const newProject = new Project(ID, name)
             // Add to data structure
@@ -273,7 +358,6 @@ const TaskCtrl = (function(){
             const newTask = new Task(ID, name, description)
             // Add to data structure
             data.tasks.push(newTask)
-
             return newTask
         },
 
@@ -315,23 +399,18 @@ const TaskCtrl = (function(){
 
         deleteTask: function(id){
             const ids = data.tasks.map(task => task.id)
-
             const index = ids.indexOf(id)
-
             data.tasks.splice(index, 1)
         },
 
         deleteProject: function(id){
             const ids = data.projects.map(project => project.id)
-
             const index = ids.indexOf(id)
-
             data.projects.splice(index, 1)
         },
 
         getProjectById: function(id){
             let found = null
-            
             data.projects.forEach(project => {
                 if(project.id === id) {
                     found = project
@@ -363,7 +442,7 @@ const TaskCtrl = (function(){
 })()
 
 // App Controller
-const App = (function(TaskCtrl, UICtrl){
+const App = (function(TaskCtrl, StorageCtrl, UICtrl){
 
     const loadEventListeners = function(){
         const UISelectors = UICtrl.getSelectors()
@@ -392,13 +471,14 @@ const App = (function(TaskCtrl, UICtrl){
     const projectAddSubmit = function(e){
         // Get form input from UI controller
         const input = UICtrl.getProjectInput()
-
         // Check for empty input
         if(input.name !== '') {
             // Add task
             const newProject = TaskCtrl.addProject(input.name)
             // Add project to UI
             UICtrl.addProjectUI(newProject)
+            // Add to LS
+            StorageCtrl.storeProject(newProject)
             // Clear fields
             UICtrl.clearProjectInput();
         }
@@ -408,13 +488,14 @@ const App = (function(TaskCtrl, UICtrl){
     const taskAddSubmit = function(e){
         // Get form input from UI controller
         const input = UICtrl.getTaskInput()
-
         // Check for empty input
         if(input.name !== '' && input.description !== '') {
             // Add task
             const newTask = TaskCtrl.addTask(input.name, input.description)
             // Add task to UI
             UICtrl.addTaskUI(newTask)
+            // Add to LS
+            StorageCtrl.storeTask(newTask);
             // Clear fields
             UICtrl.clearTaskInput();
         } 
@@ -446,9 +527,10 @@ const App = (function(TaskCtrl, UICtrl){
         const updatedTask = TaskCtrl.updateTask(input.name, input.description)
         // Update UI
         UICtrl.updateTaskList(updatedTask)
+        // Update LS
+        StorageCtrl.updateTaskStorage(updatedTask)
         // Clear fields
         UICtrl.clearTaskEditState()
-
         e.preventDefault()
     }
 
@@ -477,9 +559,10 @@ const App = (function(TaskCtrl, UICtrl){
         const updatedProject = TaskCtrl.updateProject(input.name)
         // Update UI
         UICtrl.updateProjectList(updatedProject)
+        // Update LS
+        StorageCtrl.updateProjectStorage(updatedProject)
         // Clear fields
         UICtrl.clearProjectEditState()
-
         e.preventDefault()
     }
 
@@ -495,6 +578,8 @@ const App = (function(TaskCtrl, UICtrl){
           TaskCtrl.deleteTask(id)
           // Delete from UI
           UICtrl.deleteTaskUI(id)
+          // Delete from storage
+          StorageCtrl.deleteTaskFromStorage(id)
         }
         e.preventDefault()
     }
@@ -511,6 +596,8 @@ const App = (function(TaskCtrl, UICtrl){
             TaskCtrl.deleteProject(id)
             // Delete from UI
             UICtrl.deleteProjectUI(id)
+            // Delete from storage
+            StorageCtrl.deleteProjectFromStorage(id)
           }
           e.preventDefault()
     }
@@ -534,6 +621,6 @@ const App = (function(TaskCtrl, UICtrl){
         }
     }
   }
-)(TaskCtrl, UICtrl)
+)(TaskCtrl, StorageCtrl, UICtrl)
 
 App.init()
